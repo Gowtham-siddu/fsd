@@ -1,0 +1,71 @@
+import React from 'react';
+import './App.css';
+
+function useInput(initialValue, validation) {
+  const [value, setValue] = React.useState(initialValue);
+  const [isValid, setIsValid] = React.useState(true);
+
+  const handleChange = (event) => {
+    const newValue = event.target.value;
+    setValue(newValue);
+    setIsValid(validation(newValue));
+  };
+
+  return {
+    value,
+    onChange: handleChange,
+    isValid,
+  };
+}
+
+function App() {
+  const usernameInput = useInput('', (value) => value.length === 5);
+  const passwordInput = useInput('', (value) => value.length === 5);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (usernameInput.isValid && passwordInput.isValid) {
+      alert('Login successful!');
+    } else {
+      alert('Cant Login , Data not matches with existing data');
+    }
+  };
+
+  return (
+    <div className="App">
+      <h1>Login Form</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="input-group">
+          <label>Username:</label>
+          <input
+            type="text"
+            value={usernameInput.value}
+            onChange={usernameInput.onChange}
+          />
+          <span>{usernameInput.value.length} characters</span>
+        </div>
+        <div className="input-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            value={passwordInput.value}
+            onChange={passwordInput.onChange}
+          />
+          <span>{passwordInput.value.length} characters</span>
+        </div>
+        <div className="message">
+          {usernameInput.isValid && passwordInput.isValid ? (
+            <p>Login credentials entered.</p>
+          ) : (
+            <p>For username -Please enter a 5-characters it contains any letters from "A-Z, a-z" and any numbers from "0-9"........
+             For password- please enter a 5-character password it contains any letters from "A-Z, a-z", any numbers from "0-9" and......
+            some special characters and any special characters including" @"(at sign) "_"(underscore) </p>
+          )}
+        </div>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  );
+}
+
+export default App;
